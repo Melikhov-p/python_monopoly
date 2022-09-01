@@ -17,7 +17,7 @@ def main():
     players = [p1, p2]
     while True:
         for player in players:
-            r = need_command(player, game)
+            r = need_command(player, game) # Вызов ф-ии запроса команды у игрока
             if r == 'again':
                 need_command(player, game)
             print('-------------------------------')
@@ -27,12 +27,12 @@ def need_command(player: Player, game):
     for com, value in COMMANDS_BASE.items():
         print(f'{com}: {value}')
     command = input(f'Команда игрок - ({player.name}): ')
-    if command == '1': # росок кубиков
+    if command == '1':  # Бросок кубиков
         player.roll_the_dice([game.Cub1, game.Cub2])
         print(f'Позиция: {player.position}')
-        for group in game.game_board.groups:
+        for group in game.game_board.groups:  # Проверка на какое поле встал игрок
             for field in group.fields:
-                if player.position == field.id and field.holder is None:
+                if player.position == field.id and field.holder is None:  # Поле ничье - предложение купить
                     print(f'ПОЛЕ {field.name} ({field.group.name}) // {field.cost} RUB')
                     for com, value in COMMANDS_FIELD.items():
                         print(f'{com}: {value}')
@@ -42,7 +42,7 @@ def need_command(player: Player, game):
                         return 'next'
                     elif command == '0':
                         break
-                elif player.position == field.id and player is not field.holder:
+                elif player.position == field.id and player is not field.holder:  # Поле кому-то принадлежит - платим ренту
                     player.pay_rent(field)
                     print(f'{player.money} (-{field.rent})')
                     break

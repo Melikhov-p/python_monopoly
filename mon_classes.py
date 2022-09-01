@@ -65,6 +65,7 @@ class Player:
     def pay_rent(self, field: Field):
         if self.money >= field.rent:
             self.money -= field.rent
+            field.holder.money += field.rent
 
     def __str__(self):
         return self.name

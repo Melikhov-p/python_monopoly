@@ -44,7 +44,7 @@ def need_command(player: Player, game):
                         break
                 elif player.position == field.id and player is not field.holder:  # Поле кому-то принадлежит - платим ренту
                     player.pay_rent(field)
-                    print(f'{player.money} (-{field.rent})')
+                    print(f'Рента игроку {field.holder.name} (-{field.rent}) || Оставшийся баланс: {player.money} ')
                     break
         return 'next'
     elif command == 'info':

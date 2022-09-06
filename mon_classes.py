@@ -55,12 +55,14 @@ class Player:
             dropped_sides.append(Cube.roll())
         print(dropped_sides)
         self.move(sum(dropped_sides))
+        return dropped_sides
 
     def move(self, steps_amount):
         self.position += steps_amount
         if self.position > 40:
             self.money += 2000
             self.position -= 40
+            print(f'{self.name} за прохождение круга +2000')
 
     def pay_rent(self, field: Field):
         if self.money >= field.rent:
@@ -89,7 +91,8 @@ class Game:
         # Groups
         self.food_group = Group('food', self.game_board)
         self.auto_group = Group('auto', self.game_board)
-        # hotel_group = Group('hotel')
+        self.hotel_group = Group('hotel', self.game_board)
+        self.cards = Group('cards', self.game_board)
         # Fields
         self.BK_field = Field(1, 'BK', 2400, self.food_group, 'classic', 220)
         self.McD_field = Field(2, 'McD', 2500, self.food_group, 'classic', 220)
@@ -99,6 +102,13 @@ class Game:
         self.Audi_field = Field(5, 'Audi', 2000, self.auto_group, 'classic', 250)
         self.Ford_field = Field(6, 'Ford', 2000, self.auto_group, 'classic', 250)
         self.Mercedes_field = Field(7, 'Mercedes', 2000, self.auto_group, 'classic', 250)
+
+        self.card = Field(9, 'Card', 0, self.cards, 'card', 0)
+
+        self.Hyat_field = Field(10, 'Hyat', 3000, self.hotel_group, 'classic', 300)
+        self.Raddison_field = Field(11, 'Raddison', 3200, self.hotel_group, 'classic', 315)
+        self.Holliday_field = Field(12, 'Holliday', 3300, self.hotel_group, 'classic', 350)
         # Cubes
         self.Cub1 = Cube()
         self.Cub2 = Cube()
+        self.card_actions = {'money': [2000, -2000], 'position': [2, 5, 4, -3, -8, -1]}

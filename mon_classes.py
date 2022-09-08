@@ -12,6 +12,15 @@ class Group:
         self.name = name
         self.fields = []
         board.groups.append(self)
+        self.group_owner = None
+
+    def check_group_owner(self):  # Ф-ия проверки принадлежности всех полей группы одному человеку
+        holders = [field.holder for field in self.fields]
+        if len(holders) == len(self.fields) and len(set(holders)) == 1:
+            self.group_owner = holders[0]
+            for field in self.fields:
+                field.collected_all_fields()
+
 
 
 class Field:
@@ -27,6 +36,11 @@ class Field:
         self.pledge_status = False
         group.fields.append(self)
 
+    def collected_all_fields(self):  # Все поля из группы у одного человек - повышаем ренту
+        self.rent = self.rent + self.rent*0.15
+
+    def __str__(self):
+        self.name
 
 class Player:
     def __init__(self, id: int, name, money):
@@ -36,7 +50,13 @@ class Player:
         self.fields = []
         self.position = 0
 
-    def buy_field(self, field: Field):
+    def get_field_by_name(self, field_name: str):
+        for field in self.fields:
+            if field_name == field.name:
+                return field
+        return None
+
+    def buy_field(self, field: Field):  # Ф-ия купить поле
         if self.money >= field.cost and field.holder is None:
             self.fields.append(field)
             self.money -= field.cost
@@ -44,17 +64,19 @@ class Player:
         else:
             return None
 
-    def lay_field(self, field: Field):
+    def lay_field(self, field: Field):  # Ф-ия заложить поле
         if field.holder == self:
             self.money += field.pledge
             field.pledge_status = True
+            return True
 
-    def roll_the_dice(self, Cubes: list):
+
+    def roll_the_dice(self, Cubes: list):  # Ф-ия бросить кубик
         dropped_sides = []
         for Cube in Cubes:
             dropped_sides.append(Cube.roll())
-        print(dropped_sides)
-        self.move(sum(dropped_sides))
+        print(f'Выпало: {dropped_sides}')
+        self.move(sum(dropped_sides))  # Ф-ия движение по кубику
         return dropped_sides
 
     def move(self, steps_amount):
@@ -64,7 +86,7 @@ class Player:
             self.position -= 40
             print(f'{self.name} за прохождение круга +2000')
 
-    def pay_rent(self, field: Field):
+    def pay_rent(self, field: Field):  # Ф-ия заплатить ренту
         if self.money >= field.rent:
             self.money -= field.rent
             field.holder.money += field.rent
@@ -103,11 +125,16 @@ class Game:
         self.Ford_field = Field(6, 'Ford', 2000, self.auto_group, 'classic', 250)
         self.Mercedes_field = Field(7, 'Mercedes', 2000, self.auto_group, 'classic', 250)
 
-        self.card = Field(9, 'Card', 0, self.cards, 'card', 0)
+        self.card_1 = Field(9, 'Card', 0, self.cards, 'card', 0)
+        self.card_2 = Field(18, 'Card', 0, self.cards, 'card', 0)
+        self.card_3 = Field(27, 'Card', 0, self.cards, 'card', 0)
+        self.card_4 = Field(36, 'Card', 0, self.cards, 'card', 0)
 
         self.Hyat_field = Field(10, 'Hyat', 3000, self.hotel_group, 'classic', 300)
         self.Raddison_field = Field(11, 'Raddison', 3200, self.hotel_group, 'classic', 315)
         self.Holliday_field = Field(12, 'Holliday', 3300, self.hotel_group, 'classic', 350)
+
+
         # Cubes
         self.Cub1 = Cube()
         self.Cub2 = Cube()

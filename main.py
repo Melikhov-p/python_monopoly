@@ -8,7 +8,7 @@ COMMANDS_BASE = {
     'exit': 'Закончить игру'
 }
 COMMANDS_FIELD = {
-    '2': 'Купить поле',
+    'buy': 'Купить поле',
     '0': 'Пропустить'
 }
 
@@ -20,10 +20,12 @@ def main():
     players = [p1, p2]
     while True:
         for player in players:
+            separator = '--------------------------------------------------------------'
+            step_by = f'ХОД ИГРОКА {player.name.upper()}'
+            print(separator)
+            print('|' * int((len(separator)-len(step_by))/2) + step_by + '|' * int((len(separator)-len(step_by))/2))
+            print(separator)
             need_command(player, game)  # Вызов ф-ии запроса команды у игрока
-            print('--------------------------------------------------------------')
-            print('||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||')
-            print('--------------------------------------------------------------')
 
 
 def need_command(player: Player, game):
@@ -32,6 +34,7 @@ def need_command(player: Player, game):
         command_base_lines.append(f'{com}: {value}')
     draw_info(command_base_lines)  # Отрисовка команд в таблице
     command = input(f'Команда игрок - ({player.name}): ')
+    print('▼'*16)
     if command == '1':  # Бросок кубиков
         dropped_sides = player.roll_the_dice([game.Cub1, game.Cub2])
         print(f'Позиция: {player.position}')
@@ -41,6 +44,7 @@ def need_command(player: Player, game):
                     field_action(player, field, game)
                     break
         if dropped_sides[0] == dropped_sides[1]:  # Если выпал дубль - ещё один ход
+            print('Выпал дубль, ещё один ход.')
             need_command(player, game)
         return 'next'
     elif command == 'lay':
@@ -63,9 +67,10 @@ def need_command(player: Player, game):
             if field_to_build is None:
                 print(f'Неверное имя поля: {field_name_to_build}')
                 need_command(player, game)  # Ход не тратится
-            result_build = player.lay_field(field_to_build)
+            result_build = player.build_field(field_to_build)
             if result_build:
                 print(f'На поле {field_name_to_build} построен корпус. Новая рента {field_to_build.rent}')
+
         else:
             print('Нет ни одной группы поле')
         need_command(player, game)
@@ -82,6 +87,9 @@ def need_command(player: Player, game):
         print('EXIT')
         exit(0)
 
+    elif command not in COMMANDS_BASE.keys():
+        print('НЕВЕРНАЯ КОМАНДА')
+        need_command(player, game)
 
 def field_action(player: Player, field: Field, game: Game):  # Ф-ия для действий полей (ПОЛЯ-карточки прибавляют/убавляют деньги/позицию)
     if field.type == 'card':
@@ -101,7 +109,7 @@ def field_action(player: Player, field: Field, game: Game):  # Ф-ия для д
             command_fields_lines.append(f'{com}: {value}')
         draw_info(command_fields_lines)  # Отрисовка команд для поля в таблице
         command = input(f'Команда ({player.name}): ')
-        if command == '2':
+        if command == 'buy':
             player.buy_field(field)
             field.group.check_group_owner()  # Проверка принадлежат все поля из группы одному человеку - если да, повышаем ренту
         elif command == '0':

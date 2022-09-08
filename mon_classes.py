@@ -34,14 +34,19 @@ class Field:
         self.holder = holder
         self.pledge = self.cost / 2
         self.pledge_status = False
+        self.field_level = 0
         group.fields.append(self)
 
     def collected_all_fields(self):  # Все поля из группы у одного человек - повышаем ренту
         self.rent = self.rent + self.rent * 0.15
 
-    def build(self):
-        if self.group.check_group_owner():
+    def build(self):  # Построить филиал на поле
+        if self.group.check_group_owner() and self.field_level <= 3:  # Проверка на принадлежность всех полей одному игроку
             self.rent = self.rent + self.rent * 0.3
+            return True
+        elif self.field_level >= 3:
+            print('Достигнут лимит филиалов')
+            return False
 
 
 class Player:
@@ -141,6 +146,6 @@ class Game:
         self.Cub2 = Cube()
         self.card_actions = {'money': [2000, -2000], 'position': [2, 5, 4, -3, -8, -1]}
 
-        self.p1.buy_field(self.BK_field)
-        self.p1.buy_field(self.McD_field)
-        self.p1.buy_field(self.KFC_field)
+        # self.p1.buy_field(self.BK_field)
+        # self.p1.buy_field(self.McD_field)
+        # self.p1.buy_field(self.KFC_field)

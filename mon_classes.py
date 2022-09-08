@@ -20,7 +20,7 @@ class Group:
             self.group_owner = holders[0]
             for field in self.fields:
                 field.collected_all_fields()
-
+            return True
 
 
 class Field:
@@ -37,10 +37,12 @@ class Field:
         group.fields.append(self)
 
     def collected_all_fields(self):  # Все поля из группы у одного человек - повышаем ренту
-        self.rent = self.rent + self.rent*0.15
+        self.rent = self.rent + self.rent * 0.15
 
-    def __str__(self):
-        self.name
+    def build(self):
+        if self.group.check_group_owner():
+            self.rent = self.rent + self.rent * 0.3
+
 
 class Player:
     def __init__(self, id: int, name, money):
@@ -61,6 +63,7 @@ class Player:
             self.fields.append(field)
             self.money -= field.cost
             field.holder = self
+            return True
         else:
             return None
 
@@ -69,7 +72,6 @@ class Player:
             self.money += field.pledge
             field.pledge_status = True
             return True
-
 
     def roll_the_dice(self, Cubes: list):  # Ф-ия бросить кубик
         dropped_sides = []
@@ -134,8 +136,11 @@ class Game:
         self.Raddison_field = Field(11, 'Raddison', 3200, self.hotel_group, 'classic', 315)
         self.Holliday_field = Field(12, 'Holliday', 3300, self.hotel_group, 'classic', 350)
 
-
         # Cubes
         self.Cub1 = Cube()
         self.Cub2 = Cube()
         self.card_actions = {'money': [2000, -2000], 'position': [2, 5, 4, -3, -8, -1]}
+
+        self.p1.buy_field(self.BK_field)
+        self.p1.buy_field(self.McD_field)
+        self.p1.buy_field(self.KFC_field)

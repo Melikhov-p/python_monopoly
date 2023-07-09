@@ -29,6 +29,7 @@ def main():
 
 
 def need_command(player: Player, game):
+    noneGroup = True
     command_base_lines = []
     for com, value in COMMANDS_BASE.items():
         command_base_lines.append(f'{com}: {value}')
@@ -42,7 +43,11 @@ def need_command(player: Player, game):
             for field in group.fields:
                 if player.position == field.id:  # Поле ничье - предложение купить
                     field_action(player, field, game)
+                    noneGroup = False
                     break
+        if noneGroup:
+            print('ПОЛЕ пусто')
+            input('Enter для продолжения')
         if dropped_sides[0] == dropped_sides[1]:  # Если выпал дубль - ещё один ход
             print('Выпал дубль, ещё один ход.')
             need_command(player, game)
@@ -80,7 +85,7 @@ def need_command(player: Player, game):
             f'ИМЯ: {player.name}',
             f'СЧЕТ: {player.money}',
             f'МОИ ПОЛЯ: {[field.name for field in player.fields]}'])
-
+        input('Enter для продолжения')
         need_command(player, game)  # Ход не тратится
 
     elif command == 'exit':
@@ -89,6 +94,7 @@ def need_command(player: Player, game):
 
     elif command not in COMMANDS_BASE.keys():
         print('НЕВЕРНАЯ КОМАНДА')
+        input('Enter для продолжения')
         need_command(player, game)
 
 def field_action(player: Player, field: Field, game: Game):  # Ф-ия для действий полей (ПОЛЯ-карточки прибавляют/убавляют деньги/позицию)

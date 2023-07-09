@@ -82,7 +82,7 @@ class Player:
         dropped_sides = []
         for Cube in Cubes:
             dropped_sides.append(Cube.roll())
-        print(f'Выпало: {dropped_sides}')
+        print(f'Выпало: {dropped_sides[0]} и {dropped_sides[1]}')
         self.move(sum(dropped_sides))  # Ф-ия движение по кубику
         return dropped_sides
 
@@ -144,7 +144,7 @@ class Game:
         # Cubes
         self.Cub1 = Cube()
         self.Cub2 = Cube()
-        self.card_actions = {'money': [2000, -2000], 'position': [2, 5, 4, -3, -8, -1]}
+        self.card_actions = {'money': [2000, -2000, 1000, -1000, 5000, -5000], 'position': [2, 5, 4, -3, -8, -1]}
 
         # self.p1.buy_field(self.BK_field)
         # self.p1.buy_field(self.McD_field)
